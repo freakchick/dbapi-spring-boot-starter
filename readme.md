@@ -23,7 +23,7 @@
     <artifactId>dbApi-spring-boot-starter</artifactId>
     <version>1.0</version>
 </dependency>
-
+<!--需要引入数据库的jdbc驱动-->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
