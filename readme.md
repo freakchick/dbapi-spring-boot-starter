@@ -122,5 +122,17 @@ re = requests.post("http://localhost:8888/hello", json.dumps(data),headers={"Con
 
 ## xml配置详解
 ### 数据库配置
+支持多数据源，使用ds标签来指定，
+ds标签有个id属性，值是任意字符串，这个id必须全局唯一，sql配置的时候会指定db属性，也就是指向这个id
+```
+<ds id="">
+    <url></url>
+    <username></username>
+    <password></password>
+</ds>
+```
 
 ### sql配置
+类似mybatis的语法，使用 select、update、insert、delete标签，
+标签上有id和db两个属性，id必须全局唯一，DBApi执行的时候根据这个id查找到sql内容，sql内容是动态sql，语法和mybatis一样
+db属性指定了数据库地址的id，必须在数据库配置的xml中能找到，也就是这个sql使用db对应的数据库来执行
