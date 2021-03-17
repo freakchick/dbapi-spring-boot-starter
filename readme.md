@@ -13,11 +13,9 @@
 - 接口中没有复杂逻辑，都是sql执行
 - 需要多种数据源
 
-
-
 ## 使用案例
 - 新建一个springboot的web项目，pom.xml中引入依赖
-```
+```xml
 <dependency>
     <groupId>com.jq</groupId>
     <artifactId>dbApi-spring-boot-starter</artifactId>
@@ -32,7 +30,7 @@
 ```
 
 - 在resources目录下创建数据库地址配置ds.xml
-```
+```xml
 <datasource>
     <ds id="mysql">
         <url>jdbc:mysql://localhost:3306/story?useSSL=false&amp;characterEncoding=UTF-8</url>
@@ -50,7 +48,7 @@
 ```
 
 - 在resources目录下创建sql脚本配置sql.xml
-```
+```xml
 <sql>
     <select id="getUser" db="mysql">
         select * from user
@@ -73,13 +71,13 @@
 ```
 
 - 在application.properties中配置xml地址
-```
+```properties
 dbapi.config.datasource=classpath:ds.xml
 dbapi.config.sql=classpath:sql.xml
 ```
 
 - 新建controller，注入DBApi，通过DBApi就可以执行sql
-```
+```java
 @RestController
 public class HomeController {
 
@@ -88,8 +86,8 @@ public class HomeController {
 
     @RequestMapping("/hello")
     public ResponseDto hello(@RequestBody Map<String,Object> map) {
-        # 第一个参数是sql执行的所有参数，一定要封装成Map<String,Object>类型
-        # 第二个参数是上一步sql.xml中sql脚本对应的id
+        // 第一个参数是sql执行的所有参数，一定要封装成Map<String,Object>类型
+        // 第二个参数是上一步sql.xml中sql脚本对应的id
         ResponseDto execute = dbApi.execute(map, "getUser");
         return execute;
     }
@@ -97,8 +95,8 @@ public class HomeController {
     @RequestMapping("/getUserIn")
     public ResponseDto getUserIn(@RequestBody Map<String,Object> map) {
 
-        # 第一个参数是sql执行的所有参数，一定要封装成Map<String,Object>类型
-        # 第二个参数是上一步sql.xml中sql脚本对应的id
+        // 第一个参数是sql执行的所有参数，一定要封装成Map<String,Object>类型
+        // 第二个参数是上一步sql.xml中sql脚本对应的id
         ResponseDto execute = dbApi.execute(map, "getUserIn");
         return execute;
     }
@@ -107,7 +105,7 @@ public class HomeController {
 
 - 这样，对于sql执行类的http api就已经开发完成了，接下来启动springboot应用，访问接口看看结果（我用python访问的）
 
-```
+```python
 import json
 import requests
 
@@ -121,7 +119,7 @@ print(re.text)
 ```
 
 
-```
+```python
 import json
 import requests
 
@@ -140,7 +138,7 @@ re = requests.post("http://localhost:8888/hello", json.dumps(data),headers={"Con
 ### 数据库配置
 支持多数据源，使用ds标签来指定，
 ds标签有个id属性，值是任意字符串，这个id必须全局唯一，sql配置的时候会指定db属性，也就是指向这个id
-```
+```xml
 <datasource>
     <ds id="">
         <url></url>
@@ -154,7 +152,7 @@ ds标签有个id属性，值是任意字符串，这个id必须全局唯一，sq
 类似mybatis的语法，使用 select、update、insert、delete标签，
 标签上有id和db两个属性，id必须全局唯一，DBApi执行的时候根据这个id查找到sql内容，sql内容是动态sql，语法和mybatis一样
 db属性指定了数据库地址的id，必须在数据库配置的xml中能找到，也就是这个sql使用db对应的数据库来执行
-```
+```xml
 <sql>
     <select id="" db="">
     
