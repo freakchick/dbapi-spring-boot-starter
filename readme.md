@@ -33,6 +33,7 @@
 ```xml
 <datasource>
     <ds id="mysql">
+        <!--注意xml下&符号要写成&amp;-->
         <url>jdbc:mysql://localhost:3306/story?useSSL=false&amp;characterEncoding=UTF-8</url>
         <username>root</username>
         <password>root</password>
