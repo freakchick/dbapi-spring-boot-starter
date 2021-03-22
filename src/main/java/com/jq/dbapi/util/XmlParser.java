@@ -2,6 +2,7 @@ package com.jq.dbapi.util;
 
 import com.jq.dbapi.entity.DataSource;
 import com.jq.dbapi.entity.Sql;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -28,28 +29,28 @@ import java.util.Map;
 public class XmlParser {
 
     public static void main(String[] args) throws Exception {
-/*        String text = "<sql>\n" +
-                "    <select id=\"getUser\" db=\"mysql\">\n" +
+        String text = "<sql>\n" +
+                "    <defaultDB>local_mysql</defaultDB>\n" +
+                "\n" +
+                "    <select id=\"getUser\">\n" +
                 "        select * from user\n" +
                 "        <where>\n" +
                 "            <if test = \"id != null\">\n" +
-                "                id = #{id}\n" +
+                "                id &lt;= #{id}\n" +
                 "            </if>\n" +
                 "        </where>\n" +
-                "    </select>\n" +
-                "\n" +
-                "</sql>";
-        parseSql(text);*/
+                "    </select></sql>";
+        parseSql(text);
 
-        String text = "<datasource>\n" +
-                "    <ds id=\"mysql\">\n" +
-                "        <url>jdbc:mysql://localhost:3306/story?useSSL=false&amp;characterEncoding=UTF-8</url>\n" +
-                "        <username>root</username>\n" +
-                "        <password>root</password>\n" +
-                "    </ds>\n" +
-                "\n" +
-                "</datasource>";
-        parseDatasource(text);
+//        String text = "<datasource>\n" +
+//                "    <ds id=\"mysql\">\n" +
+//                "        <url>jdbc:mysql://localhost:3306/story?useSSL=false&amp;characterEncoding=UTF-8</url>\n" +
+//                "        <username>root</username>\n" +
+//                "        <password>root</password>\n" +
+//                "    </ds>\n" +
+//                "\n" +
+//                "</datasource>";
+//        parseDatasource(text);
     }
 
     public static Map<String, DataSource> parseDatasource(String text) throws ParserConfigurationException, IOException, SAXException {
@@ -84,7 +85,7 @@ public class XmlParser {
                     }
                 }
 
-                map.put(id,dataSource);
+                map.put(id, dataSource);
 
             }
         }
@@ -98,29 +99,51 @@ public class XmlParser {
         NodeList children = documentElement.getChildNodes();
 
         Map<String, Sql> map = new HashMap<>();
+        String defaultDB = null;
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             String nodeName = child.getNodeName();
 
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                NamedNodeMap attributes = child.getAttributes();
-                Node idAttr = attributes.getNamedItem("id");
-                String id = idAttr.getTextContent();
+                if (nodeName.equals("defaultDB")) {
+                    //默认DB配置
+                    defaultDB = child.getTextContent();
+                    if (StringUtils.isBlank(defaultDB)){
+                        throw new RuntimeException("defaultDB value empty");
+                    }
+                } else if (nodeName.equalsIgnoreCase("select") || nodeName.equalsIgnoreCase("update")
+                        || nodeName.equalsIgnoreCase("insert") || nodeName.equalsIgnoreCase("delete")) {
 
-                Node dbAttr = attributes.getNamedItem("db");
-                String db = dbAttr.getTextContent();
+                    NamedNodeMap attributes = child.getAttributes();
+                    Node idAttr = attributes.getNamedItem("id");
+                    String id = idAttr.getTextContent();
 
-                String txt = nodeContentToString(child);
+                    Node dbAttr = attributes.getNamedItem("db");
+                    String txt = nodeContentToString(child);
 
-                Sql sql = new Sql();
-                sql.setDatasourceId(db);
-                sql.setText(txt);
-                sql.setId(id);
-                sql.setType(nodeName);
-                map.put(id, sql);
+                    Sql sql = new Sql();
 
+                    if (dbAttr != null){
+                        String db = dbAttr.getTextContent();
+                        sql.setDatasourceId(db);
+                    }
+
+                    sql.setText(txt);
+                    sql.setId(id);
+                    sql.setType(nodeName);
+                    map.put(id, sql);
+                } else{
+                    throw new RuntimeException("tag not supported : " + nodeName);
+                }
             }
         }
+        String finalDefaultDB = defaultDB;
+        map.keySet().forEach(t->{
+            Sql sql = map.get(t);
+            if (StringUtils.isBlank(sql.getDatasourceId())){
+                sql.setDatasourceId(finalDefaultDB);
+            }
+        });
         return map;
 
     }
