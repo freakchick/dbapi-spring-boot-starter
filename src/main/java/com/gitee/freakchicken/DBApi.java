@@ -1,13 +1,14 @@
-package com.jq.dbapi;
+package com.gitee.freakchicken;
 
-import com.jq.dbapi.entity.DBConfig;
-import com.jq.dbapi.entity.DataSource;
-import com.jq.dbapi.entity.ResponseDto;
-import com.jq.dbapi.entity.Sql;
-import com.jq.dbapi.util.JdbcUtil;
-import com.jq.dbapi.util.XmlParser;
-import com.jq.orange.SqlMeta;
-import com.jq.orange.engine.DynamicSqlEngine;
+import com.github.freakchick.orange.SqlMeta;
+import com.github.freakchick.orange.engine.DynamicSqlEngine;
+import com.gitee.freakchicken.entity.DBConfig;
+import com.gitee.freakchicken.entity.DataSource;
+import com.gitee.freakchicken.entity.ResponseDto;
+import com.gitee.freakchicken.entity.Sql;
+import com.gitee.freakchicken.util.JdbcUtil;
+import com.gitee.freakchicken.util.XmlParser;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.util.ResourceUtils;

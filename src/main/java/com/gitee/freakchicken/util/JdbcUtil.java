@@ -1,10 +1,10 @@
-package com.jq.dbapi.util;
+package com.gitee.freakchicken.util;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSONObject;
-import com.jq.dbapi.entity.DataSource;
-import com.jq.dbapi.entity.ResponseDto;
+import com.gitee.freakchicken.entity.DataSource;
+import com.gitee.freakchicken.entity.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;

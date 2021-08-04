@@ -1,8 +1,8 @@
-package com.jq.dbapi.util;
+package com.gitee.freakchicken.util;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.jq.dbapi.entity.DataSource;
+import com.gitee.freakchicken.entity.DataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;

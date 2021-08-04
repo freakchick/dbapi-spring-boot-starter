@@ -1,7 +1,7 @@
-package com.jq.dbapi.util;
+package com.gitee.freakchicken.util;
 
-import com.jq.dbapi.entity.DataSource;
-import com.jq.dbapi.entity.Sql;
+import com.gitee.freakchicken.entity.DataSource;
+import com.gitee.freakchicken.entity.Sql;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;

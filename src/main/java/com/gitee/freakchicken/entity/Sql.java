@@ -1,4 +1,4 @@
-package com.jq.dbapi.entity;
+package com.gitee.freakchicken.entity;
 
 import lombok.Data;
 

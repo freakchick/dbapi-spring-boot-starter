@@ -17,7 +17,7 @@
 - 新建一个springboot的web项目，pom.xml中引入依赖
 ```xml
 <dependency>
-    <groupId>com.jq</groupId>
+    <groupId>com.gitee.freakchicken</groupId>
     <artifactId>dbApi-spring-boot-starter</artifactId>
     <version>1.0</version>
 </dependency>

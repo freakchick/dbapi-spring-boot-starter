@@ -1,6 +1,6 @@
-package com.jq.dbapi;
+package com.gitee.freakchicken;
 
-import com.jq.dbapi.entity.DBConfig;
+import com.gitee.freakchicken.entity.DBConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

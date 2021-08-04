@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.jq.dbapi.DBApiConfiguration
+  com.gitee.freakchicken.DBApiConfiguration
