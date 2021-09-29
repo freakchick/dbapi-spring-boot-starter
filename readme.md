@@ -3,7 +3,7 @@
 ## 概述
 - dbApi-spring-boot-starter 是接口快速开发工具，可以极大的降低代码量，类似于mybatis-plus框架，不需要再编写mapper接口、resultMap、resultType、javaBean(数据库表对应的java实体)
 - 通过xml编写sql和数据库配置，可以快速开发接口，支持多数据源，支持动态sql，支持mysql/pg/hive/sqlserver
-- dbApi-spring-boot-starter 是[dbApi](https://gitee.com/freakchicken/db-api) 的spring boot集成
+- dbApi-spring-boot-starter 是[DBApi开源框架](https://gitee.com/freakchicken/db-api) 的spring boot集成
 
 ## 对比mybatis优劣
 - 如果使用mybatis框架的话，我们要编写 mapper java接口、mapper.xml、数据库表对应的javaBean实体类。
