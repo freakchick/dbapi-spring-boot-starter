@@ -9,7 +9,7 @@
 - 如果使用mybatis框架的话，我们要编写 mapper java接口、mapper.xml、数据库表对应的javaBean实体类。
 当join查询的时候还要封装resultMap(xml)和java dto实体类。
 - 如果使用本框架，相当于只需要编写mapper.xml中的sql脚本，参数类型返回类型都是自动的。极大的减少代码量。
-### 适用场景
+## 适用场景
 - 接口中没有复杂逻辑，都是sql执行
 - 需要多种数据源
 
