@@ -58,7 +58,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.freakchick</groupId>
+            <groupId>io.github.freakchick</groupId>
             <artifactId>orange</artifactId>
             <version>1.0</version>
         </dependency>
