@@ -6,7 +6,7 @@
 
     <groupId>com.gitee.freakchicken</groupId>
     <artifactId>dbApi-spring-boot-starter</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <name>dbApi-spring-boot-starter</name>
     <description>dbApi-spring-boot-starter</description>
     <url>https://gitee.com/freakchicken/dbApi-spring-boot-starter</url>

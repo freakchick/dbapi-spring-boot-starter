@@ -19,7 +19,7 @@
 <dependency>
     <groupId>com.gitee.freakchicken</groupId>
     <artifactId>dbApi-spring-boot-starter</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 </dependency>
 <!--需要引入数据库的jdbc驱动-->
 <dependency>
