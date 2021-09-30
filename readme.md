@@ -13,6 +13,15 @@
 - 接口中没有复杂逻辑，都是sql执行
 - 需要多种数据源
 
+## 引入依赖
+```xml
+<dependency>
+    <groupId>com.gitee.freakchicken</groupId>
+    <artifactId>dbApi-spring-boot-starter</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
 ## 使用案例
 - 新建一个springboot的web项目，pom.xml中引入依赖
 ```xml
