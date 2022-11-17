@@ -1,6 +1,5 @@
 package com.gitee.freakchicken.entity;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -9,12 +8,26 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author: jiangqiang
  * @create: 2021-03-11 10:49
  **/
-@Data
+
 @ConfigurationProperties("dbapi.config")
 public class DBConfig {
     String sql;
 
     String datasource;
 
+    public String getSql() {
+        return sql;
+    }
 
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(String datasource) {
+        this.datasource = datasource;
+    }
 }

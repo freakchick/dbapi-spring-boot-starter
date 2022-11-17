@@ -81,6 +81,8 @@ public class XmlParser {
                             dataSource.setUsername(node.getTextContent());
                         } else if ("password".equals(nodeName)) {
                             dataSource.setPassword(node.getTextContent());
+                        } else if ("driver".equals(nodeName)) {
+                            dataSource.setDriver(node.getTextContent());
                         }
                     }
                 }
@@ -108,7 +110,7 @@ public class XmlParser {
                 if (nodeName.equals("defaultDB")) {
                     //默认DB配置
                     defaultDB = child.getTextContent();
-                    if (StringUtils.isBlank(defaultDB)){
+                    if (StringUtils.isBlank(defaultDB)) {
                         throw new RuntimeException("defaultDB value empty");
                     }
                 } else if (nodeName.equalsIgnoreCase("select") || nodeName.equalsIgnoreCase("update")
@@ -123,7 +125,7 @@ public class XmlParser {
 
                     Sql sql = new Sql();
 
-                    if (dbAttr != null){
+                    if (dbAttr != null) {
                         String db = dbAttr.getTextContent();
                         sql.setDatasourceId(db);
                     }
@@ -132,15 +134,15 @@ public class XmlParser {
                     sql.setId(id);
                     sql.setType(nodeName);
                     map.put(id, sql);
-                } else{
+                } else {
                     throw new RuntimeException("tag not supported : " + nodeName);
                 }
             }
         }
         String finalDefaultDB = defaultDB;
-        map.keySet().forEach(t->{
+        map.keySet().forEach(t -> {
             Sql sql = map.get(t);
-            if (StringUtils.isBlank(sql.getDatasourceId())){
+            if (StringUtils.isBlank(sql.getDatasourceId())) {
                 sql.setDatasourceId(finalDefaultDB);
             }
         });

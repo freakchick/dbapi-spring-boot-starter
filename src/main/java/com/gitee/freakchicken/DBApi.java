@@ -1,20 +1,18 @@
 package com.gitee.freakchicken;
 
-import com.github.freakchick.orange.SqlMeta;
-import com.github.freakchick.orange.engine.DynamicSqlEngine;
 import com.gitee.freakchicken.entity.DBConfig;
 import com.gitee.freakchicken.entity.DataSource;
-import com.gitee.freakchicken.entity.ResponseDto;
 import com.gitee.freakchicken.entity.Sql;
 import com.gitee.freakchicken.util.JdbcUtil;
 import com.gitee.freakchicken.util.XmlParser;
-
-import lombok.extern.slf4j.Slf4j;
+import com.github.freakchick.orange.SqlMeta;
+import com.github.freakchick.orange.engine.DynamicSqlEngine;
 import org.apache.commons.io.FileUtils;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +21,6 @@ import java.util.Map;
  * @author: jiangqiang
  * @create: 2021-03-11 11:21
  **/
-@Slf4j
 public class DBApi {
 
     DynamicSqlEngine dynamicSqlEngine = new DynamicSqlEngine();
@@ -49,29 +46,41 @@ public class DBApi {
         }
     }
 
-    public ResponseDto execute(Map<String, Object> data, String sqlId) {
+    public <T> List<T> executeQuery(Map<String, Object> data, String sqlId, Class<T> clazz) {
         try {
             if (!sqlMap.containsKey(sqlId)) {
-                return ResponseDto.fail("sql not found by id : " + sqlId);
+                throw new RuntimeException("sql not found by id : " + sqlId);
             }
             Sql sql = this.sqlMap.get(sqlId);
             if (!dataSourceMap.containsKey(sql.getDatasourceId())) {
-                return ResponseDto.fail("datasource not found : " + sql.getDatasourceId());
+                throw new RuntimeException("datasource not found : " + sql.getDatasourceId());
             }
             DataSource dataSource = dataSourceMap.get(sql.getDatasourceId());
             SqlMeta sqlMeta = dynamicSqlEngine.parse(sql.getText(), data);
-            int isSelect = 0;
-            if (sql.getType().equals("select")) {
-                isSelect = 1;
-            }
 
-            ResponseDto responseDto = JdbcUtil.executeSql(isSelect, dataSource, sqlMeta.getSql(), sqlMeta.getJdbcParamValues());
-            return responseDto;
+            List<T> ts = JdbcUtil.executeQuery(dataSource, sqlMeta.getSql(), sqlMeta.getJdbcParamValues(), clazz);
+            return ts;
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseDto.fail(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
+    }
 
+    public int executeUpdate(Map<String, Object> data, String sqlId) {
+        try {
+            if (!sqlMap.containsKey(sqlId)) {
+                throw new RuntimeException("sql not found by id : " + sqlId);
+            }
+            Sql sql = this.sqlMap.get(sqlId);
+            if (!dataSourceMap.containsKey(sql.getDatasourceId())) {
+                throw new RuntimeException("datasource not found : " + sql.getDatasourceId());
+            }
+            DataSource dataSource = dataSourceMap.get(sql.getDatasourceId());
+            SqlMeta sqlMeta = dynamicSqlEngine.parse(sql.getText(), data);
+
+            return JdbcUtil.executeUpdate(dataSource, sqlMeta.getSql(), sqlMeta.getJdbcParamValues());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 }
