@@ -1,7 +1,6 @@
 package com.gitee.freakchicken.util;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.gitee.freakchicken.entity.DataSource;
 
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class JdbcUtil {
 
-    public static <T> List<T> executeQuery(DataSource datasource, String sql, List<Object> jdbcParamValues, Class<T> clazz) {
+    public static List<JSONObject> executeQuery(DataSource datasource, String sql, List<Object> jdbcParamValues) {
         DruidPooledConnection connection = null;
         try {
 
@@ -42,8 +41,7 @@ public class JdbcUtil {
                         throwables.printStackTrace();
                     }
                 });
-                T t = JSON.parseObject(jo.toJSONString(), clazz);
-                list.add(t);
+                list.add(jo);
             }
             return list;
 
