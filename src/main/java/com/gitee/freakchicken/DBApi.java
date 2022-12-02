@@ -98,4 +98,23 @@ public class DBApi {
     public int executeUpdate(Map<String, Object> data, String namespace, String sqlId) {
         try {
             if (!sqlMap.containsKey(namespace)) {
-                throw new RuntimeException("n
+                throw new RuntimeException("namespace not found : " + sqlId);
+            } else {
+                if (!sqlMap.get(namespace).containsKey(sqlId)) {
+                    throw new RuntimeException("sqlId not found : " + sqlId);
+                } else {
+                    Sql sql = this.sqlMap.get(namespace).get(sqlId);
+                    if (!dataSourceMap.containsKey(sql.getDatasourceId())) {
+                        throw new RuntimeException("datasource not found : " + sql.getDatasourceId());
+                    }
+                    DataSource dataSource = dataSourceMap.get(sql.getDatasourceId());
+                    SqlMeta sqlMeta = dynamicSqlEngine.parse(sql.getText(), data);
+
+                    return JdbcUtil.executeUpdate(dataSource, sqlMeta.getSql(), sqlMeta.getJdbcParamValues());
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+}
