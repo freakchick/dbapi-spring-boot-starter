@@ -3,6 +3,8 @@ package com.gitee.freakchicken.util;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.fastjson.JSONObject;
 import com.gitee.freakchicken.entity.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +14,10 @@ import java.util.List;
 
 public class JdbcUtil {
 
+    private static Logger logger = LoggerFactory.getLogger(JdbcUtil.class);
+
     public static List<JSONObject> executeQuery(DataSource datasource, String sql, List<Object> jdbcParamValues) {
+        logger.debug(sql);
         DruidPooledConnection connection = null;
         try {
 
@@ -58,6 +63,7 @@ public class JdbcUtil {
     }
 
     public static int executeUpdate(DataSource datasource, String sql, List<Object> jdbcParamValues) {
+        logger.debug(sql);
         DruidPooledConnection connection = null;
         try {
             connection = PoolManager.getPooledConnection(datasource);
@@ -66,8 +72,8 @@ public class JdbcUtil {
             for (int i = 1; i <= jdbcParamValues.size(); i++) {
                 statement.setObject(i, jdbcParamValues.get(i - 1));
             }
-            int updateCount = statement.getUpdateCount();
-            return updateCount;
+            int i = statement.executeUpdate();
+            return i;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
