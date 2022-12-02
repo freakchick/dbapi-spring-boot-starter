@@ -113,8 +113,7 @@ public class XmlParser {
                     if (StringUtils.isBlank(defaultDB)) {
                         throw new RuntimeException("defaultDB value empty");
                     }
-                } else if (nodeName.equalsIgnoreCase("select") || nodeName.equalsIgnoreCase("update")
-                        || nodeName.equalsIgnoreCase("insert") || nodeName.equalsIgnoreCase("delete")) {
+                } else if (nodeName.equalsIgnoreCase("sql")) {
 
                     NamedNodeMap attributes = child.getAttributes();
                     Node idAttr = attributes.getNamedItem("id");
