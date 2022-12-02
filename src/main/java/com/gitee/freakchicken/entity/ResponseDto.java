@@ -2,7 +2,7 @@ package com.gitee.freakchicken.entity;
 
 import lombok.Data;
 
-
+@Deprecated
 @Data
 public class ResponseDto {
     String msg;
