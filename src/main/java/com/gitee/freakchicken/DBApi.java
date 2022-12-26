@@ -62,17 +62,35 @@ public class DBApi {
             this.dataSourceMap = XmlParser.parseDatasource(dsText);
             logger.info("DBApi register datasource xml: {}", dsFile.getName());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
-    public <T> List<T> executeQuery(Map<String, Object> data, String namespace, String sqlId, Class<T> clazz) {
-        List<JSONObject> list = executeQuery(data, namespace, sqlId);
-        List<T> collect = list.stream().map(t -> JSON.parseObject(t.toJSONString(), clazz)).collect(Collectors.toList());
+    /**
+     * execute select sql with parameters, return a list of java bean entity
+     * 
+     * @param namespace name of xml file
+     * @param sqlId     sql id in <sql> tag
+     * @param data      sql parameters
+     * @param clazz     class of java bean entity
+     * @return
+     */
+    public <T> List<T> executeQueryEntity(String namespace, String sqlId, Map<String, Object> data, Class<T> clazz) {
+        List<JSONObject> list = executeQuery(namespace, sqlId, data);
+        List<T> collect = list.stream().map(t -> JSON.parseObject(t.toJSONString(), clazz))
+                .collect(Collectors.toList());
         return collect;
     }
 
-    public List<JSONObject> executeQuery(Map<String, Object> data, String namespace, String sqlId) {
+    /**
+     * execute select sql with parameters, return a list of JSONObject
+     * 
+     * @param namespace name of xml file
+     * @param sqlId     sql id in <sql> tag
+     * @param data      sql parameters
+     * @return
+     */
+    public List<JSONObject> executeQuery(String namespace, String sqlId, Map<String, Object> data) {
         try {
             if (!sqlMap.containsKey(namespace)) {
                 throw new RuntimeException("namespace not found : " + sqlId);
@@ -95,7 +113,38 @@ public class DBApi {
         }
     }
 
-    public int executeUpdate(Map<String, Object> data, String namespace, String sqlId) {
+    /**
+     * execute select sql without parameters, return a list of JSONObject
+     * 
+     * @param namespace name of xml file
+     * @param sqlId     sql id in <sql> tag
+     * @return
+     */
+    public List<JSONObject> executeQuery(String namespace, String sqlId) {
+        return executeQuery(namespace, sqlId, null);
+    }
+
+    /**
+     * execute select sql without parameters, return a list of java bean entity
+     * 
+     * @param namespace name of xml file
+     * @param sqlId     sql id in <sql> tag
+     * @param clazz     class of java bean entity
+     * @return
+     */
+    public <T> List<T> executeQueryEntity(String namespace, String sqlId, Class<T> clazz) {
+        return executeQueryEntity(namespace, sqlId, null, clazz);
+    }
+
+    /**
+     * execute insert/delete/update sql with parameters
+     * 
+     * @param namespace name of xml file
+     * @param sqlId     sql id in <sql> tag
+     * @param data      sql parameters
+     * @return
+     */
+    public int executeUpdate(String namespace, String sqlId, Map<String, Object> data) {
         try {
             if (!sqlMap.containsKey(namespace)) {
                 throw new RuntimeException("namespace not found : " + sqlId);
@@ -116,5 +165,16 @@ public class DBApi {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    /**
+     * execute insert/delete/update sql without parameters
+     * 
+     * @param namespace name of xml file
+     * @param sqlId     sql id in <sql> tag
+     * @return
+     */
+    public int executeUpdate(String namespace, String sqlId) {
+        return executeUpdate(namespace, sqlId, null);
     }
 }
