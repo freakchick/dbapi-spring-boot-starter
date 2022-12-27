@@ -10,7 +10,7 @@
 当join查询的时候还要封装resultMap(xml)和java dto实体类。
 - 如果使用本框架，相当于只需要编写mapper.xml中的sql脚本，参数类型返回类型都是自动的。极大的减少代码量。
 ## 适用场景
-- 接口中没有复杂逻辑，都是sql执行
+- 接口中没有复杂逻辑，都是sql执行，尤其适用于报表类应用
 - 需要多种数据源
 
 ## 引入依赖
@@ -28,7 +28,7 @@
 <dependency>
     <groupId>com.gitee.freakchicken</groupId>
     <artifactId>dbApi-spring-boot-starter</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
 </dependency>
 <!--需要引入数据库的jdbc驱动-->
 <dependency>
@@ -38,7 +38,7 @@
 </dependency>
 ```
 
-- 在resources目录下创建数据库地址配置ds.xml
+- 在`resources`目录下创建数据库地址配置文件`ds.xml`
 ```xml
 <datasource>
     <ds id="mysql">
@@ -57,88 +57,112 @@
 </datasource>
 ```
 
-- 在resources目录下创建sql脚本配置sql.xml
+- 在`resources`目录下创建`sql`目录，并在`sql`目录下新建两个文件`user.xml` `user2.xml`
+- user.xml
 ```xml
 <sql>
-    <select id="getUser" db="mysql">
-        select * from user
-        <where>
-            <if test = "id != null">
-                id &lt;= #{id}
-            </if>
-        </where>
-    </select>
+    <defaultDB>mysql</defaultDB>
 
-    <select id="getUserIn" db="local_mysql">
+    <sql id="getUser">
+        select * from student
+    </sql>
+
+    <sql id="getUserIn" db="local_mysql">
         select * from user where id in
         <foreach collection="ids" open="(" close=")" separator=",">
             #{item}
         </foreach>
 
-    </select>
+    </sql>
 
 </sql>
 ```
 
-- 在application.properties中配置xml地址
+- user2.xml
+```xml
+<sql>
+    <defaultDB>mysql</defaultDB>
+
+    <sql id="getUserById">
+        select * from student where id = #{id}
+    </sql>
+
+    <sql id="createStudent">
+        insert into student (name,age) values (#{name},#{age})
+    </sql>
+
+</sql>
+```
+
+- 在`application.properties`中配置xml地址
 ```properties
 dbapi.config.datasource=classpath:ds.xml
-dbapi.config.sql=classpath:sql.xml
+dbapi.config.sql=classpath:sql/*.xml
 ```
 
 - 新建controller，注入DBApi，通过DBApi就可以执行sql
 ```java
+package com.demo.controller;
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.gitee.freakchicken.DBApi;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @program: starterDemo
+ * @description:
+ * @author: jiangqiang
+ * @create: 2021-03-11 11:42
+ **/
+@Slf4j
+@RequestMapping("/student")
 @RestController
 public class HomeController {
 
     @Autowired
     DBApi dbApi;
 
-    @RequestMapping("/hello")
-    public ResponseDto hello(@RequestBody Map<String,Object> map) {
-        // 第一个参数是sql执行的所有参数，一定要封装成Map<String,Object>类型
-        // 第二个参数是上一步sql.xml中sql脚本对应的id
-        ResponseDto execute = dbApi.execute(map, "getUser");
-        return execute;
+    @RequestMapping("/getAll")
+    public List<JSONObject> getAllStudent() {
+        List<JSONObject> jsonObjects = dbApi.executeQuery(null, "user", "getUser");
+        return jsonObjects;
     }
 
-    @RequestMapping("/getUserIn")
-    public ResponseDto getUserIn(@RequestBody Map<String,Object> map) {
-
-        // 第一个参数是sql执行的所有参数，一定要封装成Map<String,Object>类型
-        // 第二个参数是上一步sql.xml中sql脚本对应的id
-        ResponseDto execute = dbApi.execute(map, "getUserIn");
-        return execute;
+    @RequestMapping("/getById")
+    public List<JSONObject> getStudentById(Integer id) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        List<JSONObject> jsonObjects = dbApi.executeQuery(map, "user2", "getUserById");
+        return jsonObjects;
     }
+
+    @RequestMapping("/getById2")
+    public List<Student> getStudentById2(Integer id) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        List<Student> list = dbApi.executeQuery(map, "user2", "getUserById", Student.class);
+        return list;
+    }
+
+    @RequestMapping("/add")
+    public Integer add(String name, Integer age) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("age", age);
+        int i = dbApi.executeUpdate(map, "user2", "createStudent");
+        return i;
+    }
+
 }
-```
-
-- 这样，对于sql执行类的http api就已经开发完成了，接下来启动springboot应用，访问接口看看结果（我用python访问的）
-
-```python
-import json
-import requests
-
-data = {"ids": [1, 2, 3, 4, 5, 6]}
-re = requests.post("http://localhost:8888/getUserIn", json.dumps(data), headers={"Content-Type": "application/json"})
-print(re.text)
-
-
-#执行结果：
-#{"msg":"dbApi接口访问成功","data":[{"name":"tom","id":1,"age":12,"height":1.83},{"name":"lily","id":2,"age":45,"height":1.75},{"name":"sss","id":5,"age":2,"height":1.65},{"name":"sss","id":6,"age":34,"height":1.84}],"success":true}
-```
-
-
-```python
-import json
-import requests
-
-data = {"id":3}
-re = requests.post("http://localhost:8888/hello", json.dumps(data),headers={"Content-Type": "application/json"})print(re.text)
-
-
-#执行结果：
-#{"msg":"dbApi接口访问成功","data":[{"name":"tom","id":1,"age":12,"height":1.83},{"name":"lily","id":2,"age":45,"height":1.75}],"success":true}
 
 ```
 
