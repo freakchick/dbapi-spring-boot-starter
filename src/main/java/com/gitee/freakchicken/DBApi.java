@@ -1,10 +1,9 @@
 package com.gitee.freakchicken;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.gitee.freakchicken.entity.DBConfig;
 import com.gitee.freakchicken.entity.DataSource;
-import com.gitee.freakchicken.entity.Sql;
+import com.gitee.freakchicken.entity.SqlNode;
 import com.gitee.freakchicken.util.JdbcUtil;
 import com.gitee.freakchicken.util.XmlParser;
 import com.github.freakchick.orange.SqlMeta;
@@ -37,7 +36,7 @@ public class DBApi {
 
     DBConfig dbConfig;
 
-    Map<String, Map<String, Sql>> sqlMap = new HashMap<>();
+    Map<String, Map<String, SqlNode>> sqlMap = new HashMap<>();
     Map<String, DataSource> dataSourceMap;
 
     public DBApi(DBConfig dbConfig) {
@@ -51,7 +50,7 @@ public class DBApi {
                 if (file.isFile()) {
 
                     String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                    Map<String, Sql> stringSqlMap = XmlParser.parseSql(content);
+                    Map<String, SqlNode> stringSqlMap = XmlParser.parseSql(content);
                     this.sqlMap.put(file.getName().split("\\.")[0], stringSqlMap);
                     logger.info("DBApi register sql xml: {}", file.getName());
                 }
@@ -68,7 +67,7 @@ public class DBApi {
 
     /**
      * execute select sql with parameters, return a list of java bean entity
-     * 
+     *
      * @param namespace name of xml file
      * @param sqlId     sql id in <sql> tag
      * @param data      sql parameters
@@ -77,14 +76,15 @@ public class DBApi {
      */
     public <T> List<T> executeQueryEntity(String namespace, String sqlId, Map<String, Object> data, Class<T> clazz) {
         List<JSONObject> list = executeQuery(namespace, sqlId, data);
-        List<T> collect = list.stream().map(t -> JSON.parseObject(t.toJSONString(), clazz))
+
+        List<T> collect = list.stream().map(t -> t.toJavaObject(clazz))
                 .collect(Collectors.toList());
         return collect;
     }
 
     /**
      * execute select sql with parameters, return a list of JSONObject
-     * 
+     *
      * @param namespace name of xml file
      * @param sqlId     sql id in <sql> tag
      * @param data      sql parameters
@@ -98,7 +98,7 @@ public class DBApi {
                 if (!sqlMap.get(namespace).containsKey(sqlId)) {
                     throw new RuntimeException("sqlId not found : " + sqlId);
                 } else {
-                    Sql sql = this.sqlMap.get(namespace).get(sqlId);
+                    SqlNode sql = this.sqlMap.get(namespace).get(sqlId);
                     if (!dataSourceMap.containsKey(sql.getDatasourceId())) {
                         throw new RuntimeException("datasource not found : " + sql.getDatasourceId());
                     }
@@ -115,7 +115,7 @@ public class DBApi {
 
     /**
      * execute select sql without parameters, return a list of JSONObject
-     * 
+     *
      * @param namespace name of xml file
      * @param sqlId     sql id in <sql> tag
      * @return
@@ -126,7 +126,7 @@ public class DBApi {
 
     /**
      * execute select sql without parameters, return a list of java bean entity
-     * 
+     *
      * @param namespace name of xml file
      * @param sqlId     sql id in <sql> tag
      * @param clazz     class of java bean entity
@@ -138,7 +138,7 @@ public class DBApi {
 
     /**
      * execute insert/delete/update sql with parameters
-     * 
+     *
      * @param namespace name of xml file
      * @param sqlId     sql id in <sql> tag
      * @param data      sql parameters
@@ -152,7 +152,7 @@ public class DBApi {
                 if (!sqlMap.get(namespace).containsKey(sqlId)) {
                     throw new RuntimeException("sqlId not found : " + sqlId);
                 } else {
-                    Sql sql = this.sqlMap.get(namespace).get(sqlId);
+                    SqlNode sql = this.sqlMap.get(namespace).get(sqlId);
                     if (!dataSourceMap.containsKey(sql.getDatasourceId())) {
                         throw new RuntimeException("datasource not found : " + sql.getDatasourceId());
                     }
@@ -169,7 +169,7 @@ public class DBApi {
 
     /**
      * execute insert/delete/update sql without parameters
-     * 
+     *
      * @param namespace name of xml file
      * @param sqlId     sql id in <sql> tag
      * @return

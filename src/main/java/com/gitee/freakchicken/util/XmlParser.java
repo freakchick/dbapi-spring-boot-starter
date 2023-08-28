@@ -1,7 +1,7 @@
 package com.gitee.freakchicken.util;
 
 import com.gitee.freakchicken.entity.DataSource;
-import com.gitee.freakchicken.entity.Sql;
+import com.gitee.freakchicken.entity.SqlNode;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -94,13 +94,13 @@ public class XmlParser {
         return map;
     }
 
-    public static Map<String, Sql> parseSql(String text) throws ParserConfigurationException, IOException, SAXException, TransformerException {
+    public static Map<String, SqlNode> parseSql(String text) throws ParserConfigurationException, IOException, SAXException, TransformerException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         Document document = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(text.getBytes()));
         Element documentElement = document.getDocumentElement();
         NodeList children = documentElement.getChildNodes();
 
-        Map<String, Sql> map = new HashMap<>();
+        Map<String, SqlNode> map = new HashMap<>();
         String defaultDB = null;
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
@@ -122,7 +122,7 @@ public class XmlParser {
                     Node dbAttr = attributes.getNamedItem("db");
                     String txt = nodeContentToString(child);
 
-                    Sql sql = new Sql();
+                    SqlNode sql = new SqlNode();
 
                     if (dbAttr != null) {
                         String db = dbAttr.getTextContent();
@@ -140,7 +140,7 @@ public class XmlParser {
         }
         String finalDefaultDB = defaultDB;
         map.keySet().forEach(t -> {
-            Sql sql = map.get(t);
+            SqlNode sql = map.get(t);
             if (StringUtils.isBlank(sql.getDatasourceId())) {
                 sql.setDatasourceId(finalDefaultDB);
             }

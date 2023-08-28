@@ -6,7 +6,7 @@ package com.gitee.freakchicken.entity;
  * @author: jiangqiang
  * @create: 2021-03-11 14:03
  **/
-public class Sql {
+public class SqlNode {
 
     String id;
     String text;
