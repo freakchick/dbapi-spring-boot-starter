@@ -16,9 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PoolManager {
 
     //所有数据源的连接池存在map里
-    static ConcurrentHashMap<String, DruidDataSource> map = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, DruidDataSource> map = new ConcurrentHashMap<>();
 
-    public static DruidDataSource getJdbcConnectionPool(DataSource ds) {
+    private static DruidDataSource getJdbcConnectionPool(DataSource ds) {
         if (map.containsKey(ds.getId())) {
             return map.get(ds.getId());
         } else {
