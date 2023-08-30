@@ -44,6 +44,9 @@
 </dependency>
 ```
 
+## 代码案例
+[dbapi-spring-boot-starter-demo](https://gitee.com/freakchicken/dbapi-spring-boot-starter-demo.git)
+
 ## 联系作者：
 
 ### wechat：
