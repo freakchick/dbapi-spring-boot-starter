@@ -29,7 +29,7 @@ import java.util.Map;
 public class XmlParser {
 
     public static void main(String[] args) throws Exception {
-        String text = "<sql>\n" +
+        String text = "<sqls>\n" +
                 "    <defaultDB>local_mysql</defaultDB>\n" +
                 "\n" +
                 "    <select id=\"getUser\">\n" +
@@ -39,7 +39,7 @@ public class XmlParser {
                 "                id &lt;= #{id}\n" +
                 "            </if>\n" +
                 "        </where>\n" +
-                "    </select></sql>";
+                "    </select></sqls>";
         parseSql(text);
 
 //        String text = "<datasource>\n" +
@@ -113,7 +113,7 @@ public class XmlParser {
                     if (StringUtils.isBlank(defaultDB)) {
                         throw new RuntimeException("defaultDB value empty");
                     }
-                } else if (nodeName.equalsIgnoreCase("sql")) {
+                } else if (nodeName.equalsIgnoreCase("sqls")) {
 
                     NamedNodeMap attributes = child.getAttributes();
                     Node idAttr = attributes.getNamedItem("id");
