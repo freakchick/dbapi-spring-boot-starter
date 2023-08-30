@@ -18,7 +18,7 @@ public class DBApiConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DBAPI.class)
-    public DBAPI Engine(){
+    public DBAPI Engine() {
         return new DBAPI(dbConfig);
     }
 }
