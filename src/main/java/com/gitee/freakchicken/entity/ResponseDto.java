@@ -13,7 +13,7 @@ public class ResponseDto {
         ResponseDto dto = new ResponseDto();
         dto.setData(data);
         dto.setSuccess(true);
-        dto.setMsg("dbApi接口访问成功");
+        dto.setMsg("dbapi接口访问成功");
         return dto;
     }
 

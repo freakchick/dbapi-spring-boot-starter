@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * @program: dbApi-starter
+ * @program: dbapi-starter
  * @description:
  * @author: jiangqiang
  * @create: 2021-03-11 11:21
  **/
-public class DBApi {
+public class DBAPI {
 
-    private static Logger logger = LoggerFactory.getLogger(DBApi.class);
+    private static Logger logger = LoggerFactory.getLogger(DBAPI.class);
 
     DynamicSqlEngine dynamicSqlEngine = new DynamicSqlEngine();
 
@@ -39,7 +39,7 @@ public class DBApi {
     Map<String, Map<String, SqlNode>> sqlMap = new HashMap<>();
     Map<String, DataSource> dataSourceMap;
 
-    public DBApi(DBConfig dbConfig) {
+    public DBAPI(DBConfig dbConfig) {
         this.dbConfig = dbConfig;
 
         try {

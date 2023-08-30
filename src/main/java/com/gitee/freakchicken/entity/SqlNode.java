@@ -1,7 +1,7 @@
 package com.gitee.freakchicken.entity;
 
 /**
- * @program: dbApi-starter
+ * @program: dbapi-starter
  * @description:
  * @author: jiangqiang
  * @create: 2021-03-11 14:03

@@ -3,7 +3,7 @@ package com.gitee.freakchicken.entity;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @program: dbApi-starter
+ * @program: dbapi-starter
  * @description:
  * @author: jiangqiang
  * @create: 2021-03-11 10:49

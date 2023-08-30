@@ -3,7 +3,11 @@ package com.gitee.freakchicken.util;
 import com.gitee.freakchicken.entity.DataSource;
 import com.gitee.freakchicken.entity.SqlNode;
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @program: dbApi-starter
+ * @program: dbapi-starter
  * @description:
  * @author: jiangqiang
  * @create: 2021-03-11 13:56
@@ -64,30 +68,44 @@ public class XmlParser {
             Node child = children.item(i);
 
             if (child.getNodeType() == Node.ELEMENT_NODE) {
-                NamedNodeMap attributes = child.getAttributes();
-                Node idAttr = attributes.getNamedItem("id");
-                String id = idAttr.getTextContent();
-                DataSource dataSource = new DataSource();
-                dataSource.setId(id);
+                if ("datasource".equals(child.getNodeName())) {
+                    NamedNodeMap attributes = child.getAttributes();
+                    Node idAttr = attributes.getNamedItem("id");
+                    if (idAttr == null) {
+                        throw new RuntimeException("id attribute of <datasource> tag is missing");
+                    }
+                    String id = idAttr.getTextContent();
+                    if (StringUtils.isBlank(id)) {
+                        throw new RuntimeException("id attribute of <datasource> tag is missing");
+                    }
 
-                NodeList childNodes = child.getChildNodes();
-                for (int j = 0; j < childNodes.getLength(); j++) {
-                    Node node = childNodes.item(j);
-                    if (child.getNodeType() == Node.ELEMENT_NODE) {
-                        String nodeName = node.getNodeName();
-                        if ("url".equals(nodeName)) {
-                            dataSource.setUrl(node.getTextContent());
-                        } else if ("username".equals(nodeName)) {
-                            dataSource.setUsername(node.getTextContent());
-                        } else if ("password".equals(nodeName)) {
-                            dataSource.setPassword(node.getTextContent());
-                        } else if ("driver".equals(nodeName)) {
-                            dataSource.setDriver(node.getTextContent());
+                    DataSource dataSource = new DataSource();
+                    dataSource.setId(id);
+
+                    NodeList childNodes = child.getChildNodes();
+                    for (int j = 0; j < childNodes.getLength(); j++) {
+                        Node node = childNodes.item(j);
+                        if (child.getNodeType() == Node.ELEMENT_NODE) {
+                            String nodeName = node.getNodeName();
+                            if ("url".equals(nodeName)) {
+                                dataSource.setUrl(node.getTextContent());
+                            } else if ("username".equals(nodeName)) {
+                                dataSource.setUsername(node.getTextContent());
+                            } else if ("password".equals(nodeName)) {
+                                dataSource.setPassword(node.getTextContent());
+                            } else if ("driver".equals(nodeName)) {
+                                dataSource.setDriver(node.getTextContent());
+                            } else if ("#text".equals(nodeName)) {
+                                //回车会解析成节点
+                            } else {
+                                throw new RuntimeException("tag not supported under <datasource> : " + nodeName);
+                            }
                         }
                     }
+                    map.put(id, dataSource);
+                } else {
+                    throw new RuntimeException("tag not supported : " + child.getNodeName());
                 }
-
-                map.put(id, dataSource);
 
             }
         }
@@ -113,11 +131,17 @@ public class XmlParser {
                     if (StringUtils.isBlank(defaultDB)) {
                         throw new RuntimeException("defaultDB value empty");
                     }
-                } else if (nodeName.equalsIgnoreCase("sqls")) {
+                } else if (nodeName.equalsIgnoreCase("sql")) {
 
                     NamedNodeMap attributes = child.getAttributes();
                     Node idAttr = attributes.getNamedItem("id");
+                    if (idAttr == null) {
+                        throw new RuntimeException("id attribute of <sql> tag is missing");
+                    }
                     String id = idAttr.getTextContent();
+                    if (StringUtils.isBlank(id)) {
+                        throw new RuntimeException("id attribute of <sql> tag is missing");
+                    }
 
                     Node dbAttr = attributes.getNamedItem("db");
                     String txt = nodeContentToString(child);
@@ -142,9 +166,14 @@ public class XmlParser {
         map.keySet().forEach(t -> {
             SqlNode sql = map.get(t);
             if (StringUtils.isBlank(sql.getDatasourceId())) {
-                sql.setDatasourceId(finalDefaultDB);
+                if (finalDefaultDB != null) {
+                    sql.setDatasourceId(finalDefaultDB);
+                } else {
+                    throw new RuntimeException("db attribute of <sql> tag is missing, and <defaultDB> tag is missing meanwhile");
+                }
             }
         });
+        //TODO 检查datasource是否都已经配置
         return map;
 
     }

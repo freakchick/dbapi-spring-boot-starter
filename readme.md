@@ -1,21 +1,21 @@
-# dbApi-spring-boot-starter
+# dbapi-spring-boot-starter
 
-![](https://gitee.com/freakchicken/dbApi-spring-boot-starter/badge/star.svg)
-![](https://gitee.com/freakchicken/dbApi-spring-boot-starter/badge/fork.svg?theme=gvp)
-![](https://img.shields.io/github/stars/freakchick/dbApi-spring-boot-starter.svg?logo=GitHub)
-![](https://img.shields.io/github/forks/freakchick/dbApi-spring-boot-starter.svg?logo=GitHub)
-![](https://img.shields.io/github/watchers/freakchick/dbApi-spring-boot-starter.svg?logo=GitHub)
-![](https://img.shields.io/github/license/freakchick/dbApi-spring-boot-starter.svg)
-![](https://img.shields.io/github/v/release/freakchick/dbApi-spring-boot-starter?label=latest&style=flat-square)
+![](https://gitee.com/freakchicken/dbapi-spring-boot-starter/badge/star.svg)
+![](https://gitee.com/freakchicken/dbapi-spring-boot-starter/badge/fork.svg?theme=gvp)
+![](https://img.shields.io/github/stars/freakchick/dbapi-spring-boot-starter.svg?logo=GitHub)
+![](https://img.shields.io/github/forks/freakchick/dbapi-spring-boot-starter.svg?logo=GitHub)
+![](https://img.shields.io/github/watchers/freakchick/dbapi-spring-boot-starter.svg?logo=GitHub)
+![](https://img.shields.io/github/license/freakchick/dbapi-spring-boot-starter.svg)
+![](https://img.shields.io/github/v/release/freakchick/dbapi-spring-boot-starter?label=latest&style=flat-square)
 
 <p align="center">
 	👉 <a target="_blank" href="https://starter.51dbapi.com">https://starter.51dbapi.com</a>  👈
 </p>
 
 ## 概述
-- dbApi-spring-boot-starter 是接口快速开发工具，可以极大的降低代码量，类似于mybatis-plus框架，不需要再编写mapper接口、resultMap、resultType、javaBean(数据库表对应的java实体)
+- dbapi-spring-boot-starter 是接口快速开发工具，可以极大的降低代码量，类似于mybatis-plus框架，不需要再编写mapper接口、resultMap、resultType、javaBean(数据库表对应的java实体)
 - 通过xml编写sql和数据库配置，可以快速开发接口，支持多数据源，支持动态sql，支持mysql/pg/hive/sqlserver
-- dbApi-spring-boot-starter 是[DBApi开源框架](https://github.com/freakchick/dbApi-spring-boot-starter) 的spring boot集成
+- dbapi-spring-boot-starter 是[DBApi开源框架](https://github.com/freakchick/dbapi-spring-boot-starter) 的spring boot集成
 
 ## 对比mybatis优劣
 - 如果使用mybatis框架的话，我们要编写 mapper java接口、mapper.xml、数据库表对应的javaBean实体类。
@@ -32,7 +32,7 @@
 ```xml
 <dependency>
     <groupId>com.gitee.freakchicken</groupId>
-    <artifactId>dbApi-spring-boot-starter</artifactId>
+    <artifactId>dbapi-spring-boot-starter</artifactId>
     <version>1.1.0</version>
 </dependency>
 ```

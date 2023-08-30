@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.gitee.freakchicken</groupId>
-    <artifactId>dbApi-spring-boot-starter</artifactId>
+    <artifactId>dbapi-spring-boot-starter</artifactId>
     <version>1.1.0</version>
-    <name>dbApi-spring-boot-starter</name>
-    <description>dbApi-spring-boot-starter</description>
-    <url>https://gitee.com/freakchicken/dbApi-spring-boot-starter</url>
+    <name>dbapi-spring-boot-starter</name>
+    <description>dbapi-spring-boot-starter</description>
+    <url>https://gitee.com/freakchicken/dbapi-spring-boot-starter</url>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -23,15 +23,15 @@
         <developer>
             <name>freakchick</name>
             <email>jiangqiang110@126.com</email>
-            <url>https://gitee.com/freakchicken/dbApi-spring-boot-starter</url>
+            <url>https://gitee.com/freakchicken/dbapi-spring-boot-starter</url>
 
         </developer>
     </developers>
 
     <scm>
-        <url>https://gitee.com/freakchicken/dbApi-spring-boot-starter.git</url>
-        <connection>scm:git:https://gitee.com/freakchicken/dbApi-spring-boot-starter.git</connection>
-        <developerConnection>scm:git:https://gitee.com/freakchicken/dbApi-spring-boot-starter.git</developerConnection>
+        <url>https://gitee.com/freakchicken/dbapi-spring-boot-starter.git</url>
+        <connection>scm:git:https://gitee.com/freakchicken/dbapi-spring-boot-starter.git</connection>
+        <developerConnection>scm:git:https://gitee.com/freakchicken/dbapi-spring-boot-starter.git</developerConnection>
     </scm>
 
     <licenses>
