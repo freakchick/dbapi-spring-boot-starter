@@ -8,14 +8,14 @@ import com.gitee.freakchicken.util.JdbcUtil;
 import com.gitee.freakchicken.util.XmlParser;
 import com.github.freakchick.orange.SqlMeta;
 import com.github.freakchick.orange.engine.DynamicSqlEngine;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -41,25 +41,25 @@ public class DBAPI {
 
     public DBAPI(DBConfig dbConfig) {
         this.dbConfig = dbConfig;
-
         try {
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             Resource[] resources = resolver.getResources(this.dbConfig.getSql());
+
             for (Resource res : resources) {
-                File file = res.getFile();
-                if (file.isFile()) {
-
-                    String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                    Map<String, SqlNode> stringSqlMap = XmlParser.parseSql(content);
-                    this.sqlMap.put(file.getName().split("\\.")[0], stringSqlMap);
-                    logger.info("DBApi register sql xml: {}", file.getName());
-                }
+                String filename = res.getFilename();
+                InputStream inputStream = res.getInputStream();
+                String content = IOUtils.toString(inputStream, Charsets.toCharset(StandardCharsets.UTF_8));
+                Map<String, SqlNode> stringSqlMap = XmlParser.parseSql(content);
+                this.sqlMap.put(filename.split("\\.")[0], stringSqlMap);
+                logger.info("DBAPI register sql xml: {}", filename);
             }
+            Resource dsResource = resolver.getResource(this.dbConfig.getDatasource());
 
-            File dsFile = ResourceUtils.getFile(this.dbConfig.getDatasource());
-            String dsText = FileUtils.readFileToString(dsFile, StandardCharsets.UTF_8);
-            this.dataSourceMap = XmlParser.parseDatasource(dsText);
-            logger.info("DBApi register datasource xml: {}", dsFile.getName());
+            String filename = dsResource.getFilename();
+            InputStream inputStream = dsResource.getInputStream();
+            String content = IOUtils.toString(inputStream, Charsets.toCharset(StandardCharsets.UTF_8));
+            this.dataSourceMap = XmlParser.parseDatasource(content);
+            logger.info("DBAPI register datasource xml: {}", filename);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
