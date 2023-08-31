@@ -29,6 +29,7 @@ public class PoolManager {
             druidDataSource.setConnectionErrorRetryAttempts(3);       //失败后重连次数
             druidDataSource.setBreakAfterAcquireFailure(true);
             druidDataSource.setPassword(ds.getPassword());
+            druidDataSource.setName(ds.getId());
             map.put(ds.getId(), druidDataSource);
             return map.get(ds.getId());
         }
